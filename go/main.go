@@ -7,12 +7,13 @@ import (
     "time"
 
     "github.com/fatih/color"
+    "github.com/gorilla/handlers"
     "github.com/shirou/gopsutil/v3/cpu"
-    "github.com/shirou/gopsutil/v3/disk"
     "github.com/shirou/gopsutil/v3/host"
     "github.com/shirou/gopsutil/v3/mem"
     "github.com/vbauerster/mpb/v7"
     "github.com/vbauerster/mpb/v7/decor"
+    "log"
 )
 
 // Сервисы и связанные с ними хосты
@@ -128,14 +129,36 @@ func simulateProgress() {
     p.Wait()
 }
 
+// Обработчик запроса для получения информации о системной нагрузке по хосту
+func systemInfoHandler(w http.ResponseWriter, r *http.Request) {
+    host := r.URL.Query().Get("host")
+    if host == "" {
+        http.Error(w, "Host is required", http.StatusBadRequest)
+        return
+    }
+    systemInfo := hostInfo()
+    w.Header().Set("Content-Type", "application/json")
+    json.NewEncoder(w).Encode(systemInfo)
+}
+
 func main() {
     color.Cyan("Starting SSL Certificate Checker...")
     go simulateProgress() // Запуск анимации прогресса в фоновом потоке
 
-    http.HandleFunc("/services", servicesHandler)
-    http.HandleFunc("/certificate", certificateHandler)
-    http.HandleFunc("/import", importServicesHandler)
-    http.HandleFunc("/export", exportServicesHandler)
-    fmt.Println("Server started at :8080")
-    http.ListenAndServe(":8080", nil)
+    corsHandler := handlers.CORS(
+        handlers.AllowedOrigins([]string{"*"}),
+        handlers.AllowedMethods([]string{"GET", "POST", "OPTIONS"}),
+        handlers.AllowedHeaders([]string{"Content-Type"}),
+    )
+
+    http.Handle("/services", corsHandler(http.HandlerFunc(servicesHandler)))
+    http.Handle("/certificate", corsHandler(http.HandlerFunc(certificateHandler)))
+    http.Handle("/import", corsHandler(http.HandlerFunc(importServicesHandler)))
+    http.Handle("/export", corsHandler(http.HandlerFunc(exportServicesHandler)))
+    http.Handle("/systeminfo", corsHandler(http.HandlerFunc(systemInfoHandler)))
+
+    log.Println("Server started at :8080") // Используем пакет log для вывода сообщения о запуске сервера
+    if err := http.ListenAndServe(":8080", nil); err != nil {
+        log.Fatalf("Error starting server: %s\n", err) // Используем пакет log для вывода ошибок
+    }
 }
