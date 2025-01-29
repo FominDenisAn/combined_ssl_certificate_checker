@@ -10,8 +10,8 @@
         </button>
         <transition-group name="fade" tag="ul" v-if="expandedServices.includes(serviceName)" class="host-list">
           <li v-for="host in hosts" :key="host" class="host-item">
-            <a href="#" @click.prevent="selectHost(host)">
-              {{ host }} 
+            <a href="#" @click.prevent="selectHost(host)" class="host-link">
+              <span class="host-name">{{ host }}</span>
               <MyIndicator :value="cpuUsage[host]" />
               <MyIndicator :value="ramUsage[host]" />
             </a>
@@ -107,22 +107,25 @@ button:hover {
 
 .host-item {
   display: flex;
-  justify-content: space-between;
   align-items: center;
   margin-bottom: 5px;
   padding: 5px 0;
-  border: 1px solid white;
   transition: all 0.5s ease-in-out;
 }
 
-.host-item a {
+.host-link {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   flex-grow: 1;
   color: black;
   text-decoration: none;
   font-size: 14px;
+}
+
+.host-name {
+  flex-grow: 1;
+  margin-right: 10px;
 }
 
 .fade-enter-active, .fade-leave-active {

@@ -31,6 +31,7 @@ export default {
   border: 1px solid #ccc;
   margin-right: 10px;
   padding: 2px;
+  box-sizing: border-box; /* Убедитесь, что padding не увеличивает ширину */
 }
 
 .indicator-bar {

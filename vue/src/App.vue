@@ -99,12 +99,11 @@ ul {
 
 a {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   color: black;
   text-decoration: none;
   font-size: 14px;
-  padding: 5px 0;
 }
 
 .threat-level {
@@ -122,32 +121,5 @@ a {
 
 .threat-level.medium {
   color: yellow;
-}
-
-.indicator-container {
-  display: inline-flex;
-  align-items: center;
-  width: 100px;
-  height: 20px;
-  border: 1px solid #ccc;
-  margin-right: 10px;
-}
-
-.indicator-bar {
-  height: 100%;
-  width: 0;
-  transition: width 0.5s ease-in-out;
-}
-
-span {
-  margin-left: 5px;
-  font-size: 12px;
-}
-
-.fade-enter-active, .fade-leave-active {
-  transition: opacity 0.5s;
-}
-.fade-enter, .fade-leave-to /* .fade-leave-active до версии 2.1.8 */ {
-  opacity: 0;
 }
 </style>
