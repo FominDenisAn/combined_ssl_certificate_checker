@@ -24,25 +24,23 @@ export default {
 
 <style scoped>
 .indicator-container {
-  display: inline-block;
-  position: relative;
+  display: inline-flex;
+  align-items: center;
   width: 100px;
   height: 20px;
   border: 1px solid #ccc;
   margin-right: 10px;
+  padding: 2px;
 }
 
 .indicator-bar {
   height: 100%;
+  width: 0;
+  transition: width 0.5s ease-in-out;
 }
 
 span {
-  position: absolute;
-  right: 5px;
-  top: 0;
-  bottom: 0;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
+  margin-left: 5px;
+  font-size: 12px;
 }
 </style>

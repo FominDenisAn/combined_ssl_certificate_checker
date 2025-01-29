@@ -44,13 +44,30 @@ export default {
 .import-export {
   margin-top: 20px;
 }
+
 textarea {
   width: 100%;
   height: 150px;
 }
+
 button {
   margin-top: 10px;
   padding: 10px 20px;
   cursor: pointer;
+  background-color: #e0e0e0;
+  border: none;
+  margin-right: 10px;
+}
+
+button:hover {
+  background-color: #d0d0d0;
+}
+
+.controls {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  background-color: #f0f0f0;
+  border-bottom: 1px solid #ccc;
 }
 </style>
