@@ -2,7 +2,6 @@ package main
 
 import (
     "encoding/json"
-    "fmt"
     "net/http"
     "time"
 
@@ -11,8 +10,6 @@ import (
     "github.com/shirou/gopsutil/v3/cpu"
     "github.com/shirou/gopsutil/v3/host"
     "github.com/shirou/gopsutil/v3/mem"
-    "github.com/vbauerster/mpb/v7"
-    "github.com/vbauerster/mpb/v7/decor"
     "log"
 )
 
@@ -125,7 +122,6 @@ func systemInfoHandler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
     color.Cyan("Starting SSL Certificate Checker...")
-    go simulateProgress() // Запуск анимации прогресса в фоновом потоке
 
     corsHandler := handlers.CORS(
         handlers.AllowedOrigins([]string{"*"}),
