@@ -1,0 +1,17 @@
+# Go build artifacts
+*.out
+*.exe
+
+# Editor and OS-specific files
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Go modules cache
+/vendor/
+
+# Compiled binary
+ssl_certificate_checker
