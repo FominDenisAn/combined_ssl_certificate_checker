@@ -12,8 +12,8 @@
           <li v-for="host in hosts" :key="host">
             <a href="#" @click.prevent="selectHost(host)">
               {{ host }} 
-              <Indicator :value="cpuUsage[host]" />
-              <Indicator :value="ramUsage[host]" />
+              <MyIndicator :value="cpuUsage[host]" />
+              <MyIndicator :value="ramUsage[host]" />
             </a>
           </li>
         </ul>
@@ -24,10 +24,10 @@
 
 <script>
 import axios from 'axios';
-import Indicator from './Indicator.vue';
+import MyIndicator from './MyIndicator.vue';
 
 export default {
-  components: { Indicator },
+  components: { MyIndicator },
   data() {
     return {
       services: {},
