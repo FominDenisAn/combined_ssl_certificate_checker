@@ -44,13 +44,15 @@ export default {
   height: 100vh;
   margin: 0;
 }
+
 .sidebar {
-  width: 300px;
+  width: 300px; /* Фиксируем ширину */
   background-color: #f4f4f4;
   padding: 20px;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
   overflow-y: auto;
 }
+
 .content {
   flex-grow: 1;
   padding: 20px;
