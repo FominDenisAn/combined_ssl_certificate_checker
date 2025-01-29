@@ -24,15 +24,16 @@ var services = map[string][]string{
 
 // Информация о сертификате
 type CertificateInfo struct {
-    Host        string    `json:"host"`
-    Issuer      string    `json:"issuer"`
-    ValidFrom   time.Time `json:"valid_from"`
-    ValidUntil  time.Time `json:"valid_until"`
-    SerialNumber string   `json:"serial_number"`
-    SystemTime  string    `json:"system_time"`
-    Uptime      uint64    `json:"uptime"`
-    CPUUsage    float64   `json:"cpu_usage"`
-    RAMUsage    float64   `json:"ram_usage"`
+    Host            string    `json:"host"`
+    Issuer          string    `json:"issuer"`
+    ValidFrom       time.Time `json:"valid_from"`
+    ValidUntil      time.Time `json:"valid_until"`
+    SerialNumber    string    `json:"serial_number"`
+    SystemTime      string    `json:"system_time"`
+    Uptime          uint64    `json:"uptime"`
+    CPUUsage        float64   `json:"cpu_usage"`
+    RAMUsage        float64   `json:"ram_usage"`
+    TargetPath      string    `json:"target_path"` // Добавляем поле для целевого пути сертификата
 }
 
 // Моковые данные для примера
@@ -48,6 +49,7 @@ func getCertificateInfo(host string) CertificateInfo {
         Uptime:     info.Uptime,
         CPUUsage:   info.CPUUsage,
         RAMUsage:   info.RAMUsage,
+        TargetPath: "/path/to/certificates/" + host + ".crt", // Пример мокового целевого пути
     }
 }
 
@@ -107,26 +109,6 @@ func exportServicesHandler(w http.ResponseWriter, r *http.Request) {
     w.Header().Set("Content-Type", "application/json")
     w.WriteHeader(http.StatusOK)
     json.NewEncoder(w).Encode(services)
-}
-
-// Функция для демонстрации прогресса
-func simulateProgress() {
-    p := mpb.New(mpb.WithWaitGroup(nil))
-    total := 100
-    bar := p.AddBar(int64(total),
-        mpb.PrependDecorators(
-            decor.Name("Progress"),
-            decor.CountersNoUnit("%d / %d", decor.WCSyncWidth),
-        ),
-        mpb.AppendDecorators(
-            decor.Percentage(),
-        ),
-    )
-    for i := 0; i < total; i++ {
-        time.Sleep(100 * time.Millisecond)
-        bar.Increment()
-    }
-    p.Wait()
 }
 
 // Обработчик запроса для получения информации о системной нагрузке по хосту
