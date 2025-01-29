@@ -57,17 +57,22 @@ export default {
     },
     async selectHost(host) {
       try {
-        const response = await axios.get(`http://localhost:8080/certificate?host=${host}`);
-        const certInfo = response.data;
+        const certResponse = await axios.get(`http://localhost:8080/certificate?host=${host}`);
+        const systemInfoResponse = await axios.get(`http://localhost:8080/systeminfo?host=${host}`);
 
-        // Пример получения данных о нагрузке CPU и RAM
-        const systemInfo = await axios.get(`http://localhost:8080/systeminfo?host=${host}`);
-        this.cpuUsage[host] = systemInfo.data.cpu_usage;
-        this.ramUsage[host] = systemInfo.data.ram_usage;
+        const certInfo = certResponse.data;
+        const systemInfo = systemInfoResponse.data;
 
-        this.$emit('host-selected', certInfo);
+        // Объединяем данные из двух запросов
+        const combinedData = {
+          ...certInfo,
+          cpu_usage: systemInfo.cpu_usage,
+          ram_usage: systemInfo.ram_usage,
+        };
+
+        this.$emit('host-selected', combinedData);
       } catch (error) {
-        console.error('Error fetching certificate info:', error);
+        console.error('Error fetching certificate info or system info:', error);
       }
     },
   },
@@ -85,6 +90,14 @@ button {
   text-align: left;
   margin-bottom: 10px;
   cursor: pointer;
+  background-color: #e0e0e0;
+  border: none;
+  padding: 10px;
+  font-size: 16px;
+}
+
+button:hover {
+  background-color: #d0d0d0;
 }
 
 ul {
@@ -97,5 +110,6 @@ a {
   margin-bottom: 5px;
   color: black;
   text-decoration: none;
+  font-size: 14px;
 }
 </style>
