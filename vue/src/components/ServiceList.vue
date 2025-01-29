@@ -8,17 +8,15 @@
           <span v-if="expandedServices.includes(serviceName)">-</span>
           <span v-else>+</span>
         </button>
-        <transition name="fade">
-          <ul v-if="expandedServices.includes(serviceName)" class="host-list">
-            <li v-for="host in hosts" :key="host" class="host-item">
-              <a href="#" @click.prevent="selectHost(host)">
-                {{ host }} 
-                <MyIndicator :value="cpuUsage[host]" />
-                <MyIndicator :value="ramUsage[host]" />
-              </a>
-            </li>
-          </ul>
-        </transition>
+        <transition-group name="fade" tag="ul" v-if="expandedServices.includes(serviceName)" class="host-list">
+          <li v-for="host in hosts" :key="host" class="host-item">
+            <a href="#" @click.prevent="selectHost(host)">
+              {{ host }} 
+              <MyIndicator :value="cpuUsage[host]" />
+              <MyIndicator :value="ramUsage[host]" />
+            </a>
+          </li>
+        </transition-group>
       </li>
     </ul>
   </div>
@@ -108,14 +106,23 @@ button:hover {
 }
 
 .host-item {
-  display: block;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 5px;
+  padding: 5px 0;
+  border: 1px solid white;
+  transition: all 0.5s ease-in-out;
+}
+
+.host-item a {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-grow: 1;
   color: black;
   text-decoration: none;
   font-size: 14px;
-  padding: 5px;
-  border: 1px solid white; /* Мягкая белая тонкая рамка */
-  transition: all 0.5s ease-in-out;
 }
 
 .fade-enter-active, .fade-leave-active {
@@ -123,32 +130,5 @@ button:hover {
 }
 .fade-enter, .fade-leave-to /* .fade-leave-active до версии 2.1.8 */ {
   opacity: 0;
-}
-
-.indicator-container {
-  display: inline-block;
-  position: relative;
-  width: 100px;
-  height: 20px;
-  border: 1px solid #ccc;
-  margin-right: 10px;
-}
-
-.indicator-bar {
-  height: 100%;
-}
-
-span {
-  position: absolute;
-  right: 5px;
-  top: 0;
-  bottom: 0;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-}
-
-.service-list h3 {
-  margin-top: 0;
 }
 </style>
