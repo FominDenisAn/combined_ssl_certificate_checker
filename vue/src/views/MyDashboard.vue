@@ -1,23 +1,20 @@
 <template>
   <div class="dashboard">
     <h3>Dashboard</h3>
-    <p>На этой странице отображаются основные метрики системы.</p>
-
-    <!-- Пример: карточки с метриками -->
-    <div class="metrics">
-      <div class="metric-card">
+    <div class="stats">
+      <div class="stat-card">
         <h4>Total Services</h4>
         <p>{{ totalServices }}</p>
       </div>
-      <div class="metric-card">
+      <div class="stat-card">
         <h4>Total Hosts</h4>
         <p>{{ totalHosts }}</p>
       </div>
-      <div class="metric-card">
+      <div class="stat-card">
         <h4>Average CPU Usage</h4>
         <p>{{ averageCPUUsage }}%</p>
       </div>
-      <div class="metric-card">
+      <div class="stat-card">
         <h4>Average RAM Usage</h4>
         <p>{{ averageRAMUsage }}%</p>
       </div>
@@ -32,8 +29,8 @@ export default {
   name: 'MyDashboard',
   data() {
     return {
-      services: {}, // Данные о сервисах
-      hosts: [],    // Массив данных о хостах
+      services: {},
+      hosts: [],
     };
   },
   computed: {
@@ -54,8 +51,8 @@ export default {
       return Math.round(total / this.hosts.length);
     },
   },
-  created() {
-    this.fetchServices();
+  async created() {
+    await this.fetchServices();
   },
   methods: {
     async fetchServices() {
@@ -93,13 +90,13 @@ export default {
   padding: 20px;
 }
 
-.metrics {
+.stats {
   display: flex;
   justify-content: space-around;
   margin-top: 20px;
 }
 
-.metric-card {
+.stat-card {
   background-color: #f9f9f9;
   border: 1px solid #ccc;
   border-radius: 8px;
@@ -108,7 +105,7 @@ export default {
   width: 20%;
 }
 
-.metric-card h4 {
+.stat-card h4 {
   margin-bottom: 10px;
 }
 </style>

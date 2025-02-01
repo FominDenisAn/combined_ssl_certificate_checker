@@ -1,43 +1,27 @@
 <template>
   <div class="analytics">
     <h3>Analytics</h3>
-    <p>На этой странице будут отображаться аналитические данные о хостах.</p>
-
-    <!-- Пример: таблица с данными -->
-    <table v-if="hosts.length > 0" class="data-table">
-      <thead>
-        <tr>
-          <th>Host</th>
-          <th>CPU Usage (%)</th>
-          <th>RAM Usage (%)</th>
-          <th>Threat Level</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(host, index) in hosts" :key="index" :class="['threat-level', getThreatLevelClass(host)]">
-          <td>{{ host.host }}</td>
-          <td>{{ host.cpu_usage }}%</td>
-          <td>{{ host.ram_usage }}%</td>
-          <td>{{ getThreatLevel(host) }}</td>
-        </tr>
-      </tbody>
-    </table>
-    <p v-else>No data available.</p>
+    <canvas id="cpuUsageChart"></canvas>
+    <canvas id="ramUsageChart"></canvas>
   </div>
 </template>
 
 <script>
+import { Chart } from 'chart.js/auto';
 import axios from 'axios';
 
 export default {
   name: 'MyAnalytics',
   data() {
     return {
-      hosts: [], // Массив данных о хостах
+      cpuUsageData: [],
+      ramUsageData: [],
+      hostLabels: [],
     };
   },
-  created() {
-    this.fetchHosts();
+  async created() {
+    await this.fetchHosts();
+    this.createCharts();
   },
   methods: {
     async fetchHosts() {
@@ -50,6 +34,7 @@ export default {
         for (const serviceName in services) {
           services[serviceName].forEach(host => {
             hostsArray.push({ host, serviceName });
+            this.hostLabels.push(host); // Добавляем метки для графиков
           });
         }
 
@@ -57,33 +42,63 @@ export default {
         for (const host of hostsArray) {
           const systemInfoResponse = await axios.get(`http://localhost:8080/systeminfo?host=${host.host}`);
           const systemInfo = systemInfoResponse.data;
-          host.cpu_usage = systemInfo.cpu_usage;
-          host.ram_usage = systemInfo.ram_usage;
+          this.cpuUsageData.push(systemInfo.cpu_usage);
+          this.ramUsageData.push(systemInfo.ram_usage);
         }
-
-        this.hosts = hostsArray;
       } catch (error) {
         console.error('Error fetching analytics data:', error);
       }
     },
-    getThreatLevel(host) {
-      if (!host.valid_until) return '';
-      const end = new Date(host.valid_until);
-      const now = new Date();
-      const diff = Math.floor((end - now) / (1000 * 60 * 60 * 24));
-      if (diff <= 0) {
-        return 'Critical';
-      } else if (diff <= 7) {
-        return 'High';
-      } else if (diff <= 30) {
-        return 'Medium';
-      } else {
-        return 'Low';
-      }
-    },
-    getThreatLevelClass(host) {
-      const level = this.getThreatLevel(host);
-      return level.toLowerCase();
+    createCharts() {
+      // График CPU Usage
+      const cpuCtx = document.getElementById('cpuUsageChart').getContext('2d');
+      new Chart(cpuCtx, {
+        type: 'bar',
+        data: {
+          labels: this.hostLabels,
+          datasets: [
+            {
+              label: 'CPU Usage (%)',
+              data: this.cpuUsageData,
+              backgroundColor: 'rgba(75, 192, 192, 0.6)',
+              borderColor: 'rgba(75, 192, 192, 1)',
+              borderWidth: 1,
+            },
+          ],
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true,
+            },
+          },
+        },
+      });
+
+      // График RAM Usage
+      const ramCtx = document.getElementById('ramUsageChart').getContext('2d');
+      new Chart(ramCtx, {
+        type: 'bar',
+        data: {
+          labels: this.hostLabels,
+          datasets: [
+            {
+              label: 'RAM Usage (%)',
+              data: this.ramUsageData,
+              backgroundColor: 'rgba(255, 99, 132, 0.6)',
+              borderColor: 'rgba(255, 99, 132, 1)',
+              borderWidth: 1,
+            },
+          ],
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true,
+            },
+          },
+        },
+      });
     },
   },
 };
@@ -94,32 +109,8 @@ export default {
   padding: 20px;
 }
 
-.data-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-}
-
-.data-table th,
-.data-table td {
-  padding: 10px;
-  text-align: left;
-  border-bottom: 1px solid #ddd;
-}
-
-.data-table tr.threat-level.critical {
-  background-color: #f8d7da;
-}
-
-.data-table tr.threat-level.high {
-  background-color: #fff3cd;
-}
-
-.data-table tr.threat-level.medium {
-  background-color: #d4edda;
-}
-
-.data-table tr.threat-level.low {
-  background-color: #cce5ff;
+canvas {
+  max-width: 100%;
+  margin-bottom: 20px;
 }
 </style>
