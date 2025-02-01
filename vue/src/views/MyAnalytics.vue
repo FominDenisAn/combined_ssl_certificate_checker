@@ -7,7 +7,9 @@
 </template>
 
 <script>
-import { Chart } from 'chart.js/auto';
+import { Chart, registerables } from 'chart.js'; // Используйте registerables для регистрации всех типов диаграмм
+Chart.register(...registerables);
+
 import axios from 'axios';
 
 export default {
@@ -26,7 +28,7 @@ export default {
   methods: {
     async fetchHosts() {
       try {
-        const response = await axios.get('http://localhost:8080/services');
+        const response = await axios.get('http://localhost:8082/services'); // Обратите внимание на новый порт
         const services = response.data;
 
         // Преобразуем данные в массив хостов
@@ -40,7 +42,7 @@ export default {
 
         // Получаем информацию о системной нагрузке для каждого хоста
         for (const host of hostsArray) {
-          const systemInfoResponse = await axios.get(`http://localhost:8080/systeminfo?host=${host.host}`);
+          const systemInfoResponse = await axios.get(`http://localhost:8082/systeminfo?host=${host.host}`); // Обратите внимание на новый порт
           const systemInfo = systemInfoResponse.data;
           this.cpuUsageData.push(systemInfo.cpu_usage);
           this.ramUsageData.push(systemInfo.ram_usage);

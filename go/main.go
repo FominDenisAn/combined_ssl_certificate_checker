@@ -136,8 +136,8 @@ func main() {
     http.Handle("/export", corsHandler(http.HandlerFunc(exportServicesHandler)))
     http.Handle("/systeminfo", corsHandler(http.HandlerFunc(systemInfoHandler)))
 
-    log.Println("Server started at :8080")
-    if err := http.ListenAndServe(":8080", nil); err != nil {
+    log.Println("Server started at :8082")
+    if err := http.ListenAndServe(":8082", nil); err != nil {
         log.Fatalf("Error starting server: %s\n", err)
     }
 }
