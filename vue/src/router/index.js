@@ -1,4 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
+
+// Импортируем компоненты из правильной директории (views)
 import MyServices from '../views/MyServices.vue';
 import MyDashboard from '../views/MyDashboard.vue';
 import MyAnalytics from '../views/MyAnalytics.vue';
