@@ -21,40 +21,41 @@ var services = map[string][]string{
 
 // Информация о сертификате
 type CertificateInfo struct {
-    Host            string    `json:"host"`
-    Issuer          string    `json:"issuer"`
-    ValidFrom       time.Time `json:"valid_from"`
-    ValidUntil      time.Time `json:"valid_until"`
-    SerialNumber    string    `json:"serial_number"`
-    SystemTime      string    `json:"system_time"`
-    Uptime          uint64    `json:"uptime"`
-    CPUUsage        float64   `json:"cpu_usage"`
-    RAMUsage        float64   `json:"ram_usage"`
-    TargetPath      string    `json:"target_path"` // Добавляем поле для целевого пути сертификата
+    Host           string    `json:"host"`
+    Issuer         string    `json:"issuer"`
+    ValidFrom      time.Time `json:"valid_from"` // Добавляем запятую
+    ValidUntil     time.Time `json:"valid_until"` // Добавляем запятую
+    SerialNumber   string    `json:"serial_number"` // Добавляем запятую
+    SystemTime     string    `json:"system_time"` // Добавляем запятую
+    Uptime         uint64    `json:"uptime"` // Добавляем запятую
+    CPUUsage       float64   `json:"cpu_usage"` // Добавляем запятую
+    RAMUsage       float64   `json:"ram_usage"` // Добавляем запятую
+    TargetPath     string    `json:"target_path"` // Добавляем запятую
+}
+
+// Информация о системной нагрузке
+type HostInfo struct {
+    SystemTime string  `json:"system_time"` // Добавляем запятую
+    Uptime     uint64  `json:"uptime"` // Добавляем запятую
+    CPUUsage   float64 `json:"cpu_usage"` // Добавляем запятую
+    RAMUsage   float64 `json:"ram_usage"` // Добавляем запятую
 }
 
 // Моковые данные для примера
 func getCertificateInfo(host string) CertificateInfo {
     info := hostInfo()
     return CertificateInfo{
-        Host:       host,
-        Issuer:     "Let's Encrypt",
-        ValidFrom:  time.Now().Add(-time.Hour * 24 * 30),
-        ValidUntil: time.Now().Add(time.Hour * 24 * 60),
+        Host:        host,
+        Issuer:      "Let's Encrypt",
+        ValidFrom:   time.Now().Add(-time.Hour * 24 * 30),
+        ValidUntil:  time.Now().Add(time.Hour * 24 * 60),
         SerialNumber: "1234567890",
         SystemTime: info.SystemTime,
         Uptime:     info.Uptime,
         CPUUsage:   info.CPUUsage,
         RAMUsage:   info.RAMUsage,
-        TargetPath: "/path/to/certificates/" + host + ".crt", // Пример мокового целевого пути
+        TargetPath: "/path/to/certificates/" + host + ".crt",
     }
-}
-
-type HostInfo struct {
-    SystemTime string  `json:"system_time"`
-    Uptime     uint64  `json:"uptime"`
-    CPUUsage   float64 `json:"cpu_usage"`
-    RAMUsage   float64 `json:"ram_usage"`
 }
 
 func hostInfo() HostInfo {
@@ -135,8 +136,8 @@ func main() {
     http.Handle("/export", corsHandler(http.HandlerFunc(exportServicesHandler)))
     http.Handle("/systeminfo", corsHandler(http.HandlerFunc(systemInfoHandler)))
 
-    log.Println("Server started at :8080") // Используем пакет log для вывода сообщения о запуске сервера
+    log.Println("Server started at :8080")
     if err := http.ListenAndServe(":8080", nil); err != nil {
-        log.Fatalf("Error starting server: %s\n", err) // Используем пакет log для вывода ошибок
+        log.Fatalf("Error starting server: %s\n", err)
     }
 }

@@ -2,7 +2,7 @@
   <div v-if="selectedHost">
     <h3>Certificate Information for {{ selectedHost.host }}</h3>
     <p><strong>Issuer:</strong> {{ selectedHost.issuer }}</p>
-    <p><strong>Days Left:</strong> {{ daysLeft }} days</p>
+    <p><strong>Days Left:</strong> <span :class="['threat-level', threatLevelClass]">{{ daysLeft }} days</span></p>
     <p><strong>Start Date:</strong> {{ formattedStartDate }}</p>
     <p><strong>End Date:</strong> {{ formattedEndDate }}</p>
     <p><strong>Serial Number:</strong> {{ selectedHost.serial_number }}</p>
@@ -62,10 +62,43 @@ export default {
         return 'Low';
       }
     },
+    threatLevelClass() {
+      if (!this.selectedHost || !this.selectedHost.valid_until) {
+        return '';
+      }
+      const end = dayjs(this.selectedHost.valid_until);
+      const now = dayjs();
+      const diff = end.diff(now, 'day');
+      if (diff <= 0) {
+        return 'critical';
+      } else if (diff <= 7) {
+        return 'high';
+      } else if (diff <= 30) {
+        return 'medium';
+      } else {
+        return 'low';
+      }
+    },
   },
 };
 </script>
 
 <style scoped>
 /* Add your styles here */
+.threat-level {
+  font-weight: bold;
+  color: green;
+}
+
+.threat-level.critical {
+  color: red;
+}
+
+.threat-level.high {
+  color: orange;
+}
+
+.threat-level.medium {
+  color: yellow;
+}
 </style>
